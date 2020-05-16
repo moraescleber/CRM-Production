@@ -1,0 +1,242 @@
+﻿* {
+    font-size: 20px;
+}
+
+.title {
+    font-size: 23px;
+}
+
+div {
+    border: 1px solid #f0f0f1;
+    background: #ebe5ec;
+}
+
+a {
+    color: darkgreen;
+}
+
+    a:visited {
+        color: blue;
+    }
+
+header {
+    min-height: 100px;
+    background: #f3f3f3;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-areas: "a b b b c";
+}
+
+.left {
+    grid-area: a;
+    min-height: 230px;
+    height: calc(100vh - 110px);
+    display: grid;
+    /*grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;*/
+}
+
+    .left > div {
+        padding: 5px;
+    }
+
+.title-new-companies {
+    grid-area: title-new-companies;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-areas: "titleName titleName titleName titleName titleName titleName plus";
+}
+
+.titleName {
+    grid-area: titleName;
+}
+
+.plus {
+    grid-area: plus;
+}
+
+.title-qualified {
+    grid-area: title-qualified;
+}
+
+.content-new-companies {
+    grid-area: content;
+}
+
+.content {
+    color: #484848;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.content-qualified {
+    grid-area: content;
+}
+
+.content-not-qualified {
+    grid-area: content;
+}
+
+.title-not-qualified {
+    grid-area: title-not-qualified;
+}
+
+.center {
+    grid-area: b;
+    min-height: 230px;
+    height: calc(100vh - 110px);
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-areas: "company-information" "company-information" "company-information" "controls" "prospect-finder" "prospect-finder" "prospect-finder" "prospect-finder";
+}
+
+.right {
+    grid-area: c;
+    min-height: 230px;
+    height: calc(100vh - 110px);
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas: "user" "logs";
+}
+
+.company-information {
+    grid-area: company-information;
+}
+
+.controls {
+    grid-area: controls;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    grid-template-areas: "not-q-div q-div";
+}
+
+.prospect-finder {
+    grid-area: prospect-finder;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+    .prospect-finder button {
+        margin: 10px;
+    }
+
+.user {
+    grid-area: user;
+}
+
+.logs {
+    grid-area: logs;
+}
+
+.log-cell {
+    color: #0077cc;
+    font: inherit;
+    font-size: 100%;
+    vertical-align: baseline;
+    border: black 1px solid;
+}
+
+.log-user {
+    font-weight: bold;
+    font-size: 13px;
+    display: block;
+    cursor: pointer;
+    text-decoration: none;
+    color: #07C;
+    padding-right: 12px;
+    word-break: break-word;
+}
+
+.log-action {
+    font: inherit;
+    font-size: 100%;
+    vertical-align: baseline;
+    margin: 3px 0;
+    font-weight: bold;
+    color: #711a1a;
+    margin-right: 7px;
+    word-break: break-word;
+}
+
+.log-date {
+    margin: 3px 0;
+    text-transform: uppercase;
+    font-size: 11px;
+    font: inherit;
+    vertical-align: baseline;
+    color: #45A163;
+    white-space: nowrap;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+table {
+    border-collapse: collapse; /*убираем пустые промежутки между ячейками*/
+    border: 3px solid grey; /*устанавливаем для таблицы внешнюю границу серого цвета толщиной 3px*/
+    color: #669;
+    padding: 9px 8px;
+    background: white;
+    width: 100%;
+    text-align: center;
+}
+
+tbody tr:hover td {
+    color: #6699ff;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #e6e6e6;
+}
+
+th {
+    border: 1px solid grey;
+}
+
+td {
+    border: 1px solid grey;
+}
+
+th, td {
+    border: 1px solid grey;
+}
+
+.modal {
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+    .modal-content button {
+        margin-top: 15px;
+        margin-left: 15px;
+    }
+
+.scroll {
+    overflow: hidden;
+    overflow-y: auto;
+}

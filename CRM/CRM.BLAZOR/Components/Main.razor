@@ -1,0 +1,45 @@
+﻿
+@using CRM.BLAZOR.Components
+@inject CRM.BLL.Interfaces.IUserRegistrationService UserRegistrationService
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Title - CRM.RAZOR</title>
+    <link rel="stylesheet" href="~/css/style.css" />
+</head>
+<body>
+    <header>
+    </header>
+    <div class="container">
+        <component type="typeof(CompaniesDiv)" render-mode="Server" />
+        <div class="center">
+            <component type="typeof(CompanyInformationDiv)" render-mode="Server" />
+            <component type="typeof(Controls)" render-mode="Server" />
+            <component type="typeof(ProspectFinderDiv)" render-mode="Server" />
+        </div>
+        <div class="right">
+            @{/*
+                @if (User.Identity.IsAuthenticated)
+                {
+                    TempService.CurrentUser = await UserRegistrationService.GetCurrent(User.Identity.Name);
+                    <component type="typeof(Manager)" render-mode="Server" />
+                }
+                else
+                {
+                    <form name="f1" asp-controller="Account" asp-action="Login" method="post">
+                        <p>Введите login </p>
+                        <input type="text" name="Email" />
+                        <p>Введите пароль </p>
+                        <input type="password" name="Password" />
+                        <input type="submit" value="Войти" class="btn btn-outline-dark" />
+                    </form>
+                }*/
+            }
+            <component type="typeof(Logs)" render-mode="Server" />
+        </div>
+    </div>
+</body>
+</html>
