@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CRM.DAL.Entities
+namespace CRM.BLL.DTO
 {
-    public class Log
+    public class LogDTO
     {
         public int Id { get; set; }
         public string Action { get; set; }
         public string UserId { get; set; }
-        public User User { get; set; }
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public DateTime CreatedDate { get; set; }
     }
 }

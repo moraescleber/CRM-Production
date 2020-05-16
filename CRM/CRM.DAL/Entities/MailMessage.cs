@@ -4,7 +4,10 @@ using System.Text;
 
 namespace CRM.DAL.Entities
 {
-    class MailMessage
+    public class MailMessage
     {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string Content { get; set; }
     }
 }

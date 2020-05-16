@@ -2,24 +2,18 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CRM.DAL.Entities
+namespace CRM.BLL.DTO
 {
-    public class Company
+    public class CompanyDTO
     {
         public int Id { get; set; }
         public string CompanyLegalName { get; set; }
         public string TradingName { get; set; }
         public int HGBasedInCountryId { get; set; }
-        public Country HGBasedInCountry { get; set; }
         public string LeadOwnerId { get; set; }
-        public User LeadOwner { get; set; }
         public int QualificationId { get; set; }
-        public CompanyQualification Qualification { get; set; }
         public string Website { get; set; }
         public DateTime QualifiedDate { get; set; }
-        public int? CompanyLinkedinId { get; set; }
-        public Linkedin CompanyLinkedin { get; set; }
-
-        public virtual List<CompanyContactLink> CompanyContactLinks { get; set; }
+        public int CompanyLinkedinId { get; set; }
     }
 }

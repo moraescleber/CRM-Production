@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CRM.DAL.Entities
+namespace CRM.BLL.DTO
 {
-    public class Region
+    public class RegionDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public virtual List<Country> Countries { get; set; }
     }
 }
-

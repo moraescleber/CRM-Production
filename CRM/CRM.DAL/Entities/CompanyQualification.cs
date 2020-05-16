@@ -4,7 +4,9 @@ using System.Text;
 
 namespace CRM.DAL.Entities
 {
-    class CompanyQualification
+    public class CompanyQualification
     {
+        public int Id { get; set; }
+        public string QualificationName { get; set; }
     }
 }
