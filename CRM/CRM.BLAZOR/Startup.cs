@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using CRM.BLL.Interfaces;
 using CRM.BLL.Services;
@@ -8,7 +9,9 @@ using CRM.DAL.EF;
 using CRM.DAL.Entities;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +35,16 @@ namespace CRM.BLAZOR
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            //services.AddHttpClient();
+            services.AddScoped(s =>
+            {
+                // Creating the URI helper needs to wait until the JS Runtime is initialized, so defer it.
+                var uriHelper = s.GetRequiredService<NavigationManager>();
+                return new HttpClient
+                {
+                    BaseAddress = new Uri(uriHelper.BaseUri)
+                };
+            });
             services.AddControllersWithViews();
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddIdentity<User, IdentityRole>()
@@ -46,7 +59,15 @@ namespace CRM.BLAZOR
             services.AddTransient(typeof(IUserRegistrationService), typeof(UserRegistrationService));
             services.AddTransient(typeof(ICountryService), typeof(CountryService));
             services.AddTransient(typeof(ICompanyService), typeof(CompanyService));
+            services.AddTransient(typeof(IMailFindService), typeof(MailFindService));
+            services.AddTransient(typeof(ILogService), typeof(LogService));
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+            services.AddHttpsRedirection(options =>
+            {
+                options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
+                options.HttpsPort = 3333;
+            });
+            services.AddScoped(typeof(ITempService), typeof(TempService));
             services.AddSignalR();
         }
 
@@ -63,7 +84,7 @@ namespace CRM.BLAZOR
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();

@@ -2,5 +2,24 @@
 @using CRM.BLAZOR.Components
 
 @{ Layout = null;}
-
-<script src="_framework/blazor.server.js"></script>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Title - CRM.RAZOR</title>
+    <link rel="stylesheet" href="~/css/style.css" />
+</head>
+<body>
+    <header>
+    </header>
+    <div>
+        @if(User.Identity.IsAuthenticated)
+        {
+            <p>gdfhjbknl;,</p>
+        }
+        <component type="typeof(Main)" render-mode="Server" />
+    </div>
+    <script src="_framework/blazor.server.js"></script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+﻿@inherits CompanyInformationBase
+<div class="company-information">
+    Информация о компании
+    @if (CompanyModel != null)
+    {
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="8">
+                        @CompanyModel.CompanyLegalName
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        Id
+                    </td>
+                    <td>
+                        Trading Name
+                    </td>
+                    <td>
+                        WebSite
+                    </td>
+                    <td>
+                        HQ Based in country
+                    </td>
+                    <td>
+                        LeadOwner
+                    </td>
+                    <td>
+                        Qualification
+                    </td>
+                    <td>
+                        Qualificated Date
+                    </td>
+                    <td>
+                        Linkedin
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @CompanyModel.Id
+                    </td>
+                    <td>
+                        @CompanyModel.TradingName
+                    </td>
+                    <td>
+                        @CompanyModel.Website
+                    </td>
+                    <td>
+                        @CompanyModel.HGBasedInCountryName
+                    </td>
+                    <td>
+                        @CompanyModel.LeadOwnerFullName
+                    </td>
+                    <td>
+                        @CompanyModel.QualificationName
+                    </td>
+                    <td>
+                        @CompanyModel.QualifiedDate.ToShortDateString();
+                    </td>
+                    <td>
+                        @if (CompanyModel.CompanyLinkedinFullLink == null)
+                        {
+                            <p>Отсутствует</p>
+                        }
+                        else
+                        {
+                            <a target="blank" href="http://@CompanyModel.CompanyLinkedinFullLink">Перейти</a>
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    }
+</div>

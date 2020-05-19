@@ -1,0 +1,77 @@
+﻿@inherits CompaniesBase
+
+<div class="left" style="grid-template-areas:@LeftStyle">
+    @if (TempService.CurrentUser != null)
+    {
+        <div class="title title-new-companies" @onclick="openNewCompaniesDiv">
+            <span class="titleName">
+                Новые компании
+            </span>
+            <div @onclick="ImportCSV" class="plus flex-center">
+                +
+            </div>
+        </div>
+        <div class="content content-new-companies" style="display:@NewCompanyDisplay">
+            @foreach (var company in NewCompanies)
+            {
+                if (company.Id != SelectedId)
+                {
+                    <div class="company-element" @onclick="@(selectCompanyElement(company.Id))">
+                        <a @onclick:stopPropagation="true" @onclick="_=>AddLog(WebSite:company.Website)" href="http://@company.Website" target="_blank">@company.CompanyLegalName</a> <br />
+                    </div>
+                }
+                else
+                {
+                    <div style="background:red" class="company-element" @onclick="@(selectCompanyElement(company.Id))">
+                        <a @onclick:stopPropagation="true" @onclick="_=>AddLog(WebSite:company.Website)" href="http://@company.Website" target="_blank">@company.CompanyLegalName</a> <br />
+                    </div>
+                }
+            }
+        </div>
+        <div class="title title-qualified" @onclick="openQualifiedDiv">
+            Квалифицированные
+        </div>
+        <div class="content content-qualified" style="display:@QualifiedDisplay">
+            @foreach (var company in QualifiedCompanies)
+            {
+                if (company.Id != SelectedId)
+                {
+                    <div class="company-element" @onclick="@(selectCompanyElement(company.Id))">
+                        <a @onclick:stopPropagation="true" @onclick="_=>AddLog(WebSite:company.Website)" href="http://@company.Website" target="_blank">@company.CompanyLegalName</a> <br />
+                    </div>
+                }
+                else
+                {
+                    <div style="background:red" class="company-element" @onclick="@(selectCompanyElement(company.Id))">
+                        <a @onclick:stopPropagation="true" @onclick="_=>AddLog(WebSite:company.Website)" href="http://@company.Website" target="_blank">@company.CompanyLegalName</a> <br />
+                    </div>
+                }
+            }
+        </div>
+        <div class="title title-not-qualified" @onclick="openNotQualifiedDiv">
+            Не квалифицированные
+        </div>
+        <div class="content content-not-qualified" style="display:@NotQualifiedDisplay">
+            @foreach (var company in NotQualifiedCompanies)
+            {
+                if (company.Id != SelectedId)
+                {
+                    <div class="company-element" @onclick="@(selectCompanyElement(company.Id))">
+                        <a @onclick:stopPropagation="true" @onclick="_=>AddLog(WebSite:company.Website)" href="http://@company.Website" target="_blank">@company.CompanyLegalName</a> <br />
+                    </div>
+                }
+                else
+                {
+                    <div style="background:red" class="company-element" @onclick="@(selectCompanyElement(company.Id))">
+                        <a @onclick:stopPropagation="true" @onclick="_=>AddLog(WebSite:company.Website)" href="http://@company.Website" target="_blank">@company.CompanyLegalName</a> <br />
+                    </div>
+                }
+            }
+        </div>
+    }
+    else
+    {
+        <h1>Авторизуйтесь!!!</h1>
+    }
+
+</div>

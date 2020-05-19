@@ -49,7 +49,7 @@ namespace CRM.BLAZOR
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls("http://*:3333");
+                    webBuilder.UseUrls("https://*:3333");
                 });
     }
 }
