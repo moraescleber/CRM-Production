@@ -1,20 +1,290 @@
 ﻿@using Microsoft.AspNetCore.Components.Web;
+@using CRM.BLL.DTO;
+@using CRM.DAL.Entities;
 @inherits MainBase
 
 
 <div class="container">
-    <Companies NewCompanies="NewCompanies" NotQualifiedCompanies="NotQualifiedCompanies" QualifiedCompanies="QualifiedCompanies"></Companies>
+    <div class="left" style="grid-template-areas:@LeftStyle">
+        @if (TempService.CurrentUser != null)
+        {
+            <div class="title title-new-companies" @onclick="openNewCompaniesDiv">
+                <span class="titleName">
+                    Новые компании
+                </span>
+                <div @onclick="ImportCSV" class="plus flex-center">
+                    +
+                </div>
+            </div>
+            <div class="content content-new-companies" style="display:@NewCompanyDisplay">
+                @foreach (var company in NewCompanies ?? Enumerable.Empty<CompanyDTO>())
+                {
+                    if (company.Id != SelectedId)
+                    {
+                        <div class="company-element" @onclick="@(async _ => await selectCompanyElement(company.Id))">
+                            <a @onclick:stopPropagation="true" @onclick="async _=> await AddLog(WebSite:company.Website)" href="http://@company.Website" target="_blank">@company.CompanyLegalName</a> <br />
+                        </div>
+                    }
+                    else
+                    {
+                        <div style="background:red" class="company-element" @onclick="@(async _ => await selectCompanyElement(company.Id))">
+                            <a @onclick:stopPropagation="true" @onclick="async _=>await AddLog(WebSite:company.Website)" href="http://@company.Website" target="_blank">@company.CompanyLegalName</a> <br />
+                        </div>
+                    }
+                }
+            </div>
+            <div class="title title-qualified" @onclick="openQualifiedDiv">
+                Квалифицированные
+            </div>
+            <div class="content content-qualified" style="display:@QualifiedDisplay">
+                @foreach (var company in QualifiedCompanies ?? Enumerable.Empty<CompanyDTO>())
+                {
+                    if (company.Id != SelectedId)
+                    {
+                        <div class="company-element" @onclick="@(async _ => await selectCompanyElement(company.Id))">
+                            <a @onclick:stopPropagation="true" @onclick="async _=>await AddLog(WebSite:company.Website)" href="http://@company.Website" target="_blank">@company.CompanyLegalName</a> <br />
+                        </div>
+                    }
+                    else
+                    {
+                        <div style="background:red" class="company-element" @onclick="@(async _ => await selectCompanyElement(company.Id))">
+                            <a @onclick:stopPropagation="true" @onclick="async _=>await AddLog(WebSite:company.Website)" href="http://@company.Website" target="_blank">@company.CompanyLegalName</a> <br />
+                        </div>
+                    }
+                }
+            </div>
+            <div class="title title-not-qualified" @onclick="openNotQualifiedDiv">
+                Не квалифицированные
+            </div>
+            <div class="content content-not-qualified" style="display:@NotQualifiedDisplay">
+                @foreach (var company in NotQualifiedCompanies ?? Enumerable.Empty<CompanyDTO>())
+                {
+                    if (company.Id != SelectedId)
+                    {
+                        <div class="company-element" @onclick="@(async _ => await selectCompanyElement(company.Id))">
+                            <a @onclick:stopPropagation="true" @onclick="async _ => await AddLog(WebSite:company.Website)" href="http://@company.Website" target="_blank">@company.CompanyLegalName</a> <br />
+                        </div>
+                    }
+                    else
+                    {
+                        <div style="background:red" class="company-element" @onclick="@(async _ => await selectCompanyElement(company.Id))">
+                            <a @onclick:stopPropagation="true" @onclick="async _ => await AddLog(WebSite:company.Website)" href="http://@company.Website" target="_blank">@company.CompanyLegalName</a> <br />
+                        </div>
+                    }
+                }
+            </div>
+        }
+        else
+        {
+            <h1>Авторизуйтесь!!!</h1>
+        }
+
+    </div>
     <div class="center">
-        <component type="typeof(CompanyInformationDiv)" render-mode="Server" />
-        <component type="typeof(Controls)" render-mode="Server" />
-        <component type="typeof(ProspectFinderDiv)" render-mode="Server" />
+        <div class="company-information">
+            Информация о компании
+            @if (SelectedCompany != null)
+            {
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="8">
+                                @SelectedCompany.CompanyLegalName
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                Id
+                            </td>
+                            <td>
+                                Trading Name
+                            </td>
+                            <td>
+                                WebSite
+                            </td>
+                            <td>
+                                HQ Based in country
+                            </td>
+                            <td>
+                                LeadOwner
+                            </td>
+                            <td>
+                                Qualification
+                            </td>
+                            <td>
+                                Qualificated Date
+                            </td>
+                            <td>
+                                Linkedin
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @SelectedCompany.Id
+                            </td>
+                            <td>
+                                @SelectedCompany.TradingName
+                            </td>
+                            <td>
+                                @SelectedCompany.Website
+                            </td>
+                            <td>
+                                @SelectedCompany.HGBasedInCountryName
+                            </td>
+                            <td>
+                                @SelectedCompany.LeadOwnerFullName
+                            </td>
+                            <td>
+                                @SelectedCompany.QualificationName
+                            </td>
+                            <td>
+                                @SelectedCompany.QualifiedDate.ToShortDateString();
+                            </td>
+                            <td>
+                                @if (SelectedCompany.CompanyLinkedinFullLink == null)
+                                {
+                                    <p>Отсутствует</p>
+                                }
+                                else
+                                {
+                                    <a target="blank" @onclick="async _=> await AddLog(LinkedinOfTradingName:SelectedCompany.TradingName)" href="http://@SelectedCompany.CompanyLinkedinFullLink">Перейти</a>
+                                }
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            }
+        </div>
+        <div class="controls">
+            <div class="flex-center not-q-div">
+                <button id="i1" @onclick="setNotQualify" disabled="@IsDisabled">Квалификацию не прошёл</button>
+            </div>
+            <div class="flex-center q-div">
+                <button @onclick="setQualify" disabled="@IsDisabled">Квалифицировать как клиента</button>
+            </div>
+        </div>
+        <div class="prospect-finder">
+            <!-- The Modal -->
+            <div id="myModal" class="modal" style="display:@ModalDisplay">
+
+                <!-- Modal content -->
+                <div class="modal-content">
+                    <span class="close" @onclick="Close">&times;</span>
+                    <p>Отправить сообщение @checkedContacts.Count людям</p>
+                    @if (SendForContacts != null)
+                    {
+                        @foreach (var contact in SendForContacts)
+                        {
+                            @contact.Email <br />
+                        }
+                    }
+                    <butto @onclick="async _=>await AddLog(count:SendForContacts.Count())">OK</butto><button @onclick="Close">Cancel</button>
+
+                </div>
+
+            </div>
+            @if (SelectedId != 0)
+            {
+                <button>Найти контакты для @SelectedCompany.TradingName</button>
+
+
+                @if (checkedContacts != null)
+                {
+                    <button @onclick="Send">Отправить в lemmlist @checkedContacts.Count адресов </button>
+                }
+                @if (contacts != null)
+                {
+                    <table>
+                        <thead>
+                            <tr>
+                                <th colspan="7">
+                                    Найденные контакты @SelectedCompany.CompanyLegalName
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>
+                                    Id
+                                </th>
+                                <th>
+                                    Должность
+                                </th>
+                                <th>
+                                    Email
+                                </th>
+                                <th>
+                                    Имя
+                                </th>
+                                <th>
+                                    Фамилия
+                                </th>
+                                <th>
+                                    Linkedin Id
+                                </th>
+                                <th>
+                                    Выбрать
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var contact in contacts)
+                            {
+                                <tr>
+                                    <td>
+                                        @contact.Id
+                                    </td>
+                                    <td>
+                                        @contact.Position
+                                    </td>
+                                    <td>
+                                        @contact.Email
+                                    </td>
+                                    <td>
+                                        @contact.FirstName
+                                    </td>
+                                    <td>
+                                        @contact.Surname
+                                    </td>
+                                    <td>
+                                        @if (contact.LinkedinId == 0)
+                                        {
+                                            <p>Отсутсвует</p>
+                                        }
+                                        else
+                                        {
+                                            Linkedin linkedin = Linkedins.Where(p => p.Id == contact.LinkedinId).FirstOrDefault();
+                                            <a @onclick="async _=> await AddLog(LinkedinOfUser:linkedin.FullLink)" href="https://@linkedin.FullLink">Перейти</a>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (checkedContacts.Contains(contact.Id))
+                                        {
+                                            <input type="checkbox" value="@contact.Id" @onchange="(_=>Check(contact.Id))" checked />
+                                        }
+                                        else
+                                        {
+                                            <input type="checkbox" value="@contact.Id" @onchange="(_=>Check(contact.Id))" />
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            }
+
+        </div>
     </div>
     <div class="right">
 
-        @if (user.Identity.IsAuthenticated)
+        @if (user != null && user.Identity.IsAuthenticated && TempService.CurrentUser != null)
         {
-
-            <component type="typeof(Manager)" render-mode="Server" />
+            <div class="flex-center user">
+                @TempService.CurrentUser.Email <br />
+                <br />
+                <button @onclick="async _=> await Logout()">Выйти</button>
+            </div>
         }
         else
         {
@@ -26,6 +296,26 @@
                 <input type="submit" value="Войти" class="btn btn-outline-dark" @onclick="Login" />
             </div>
         }
-        <component type="typeof(Logs)" render-mode="Server" />
+        <div class="scroll logs">
+            @if (logs != null)
+            {
+
+                @foreach (var log in logs)
+                {
+                    <div class="log-cell">
+                        <div class="log-user">
+                            @currentUser.Email
+                        </div>
+                        <div class="log-action">
+                            @log.Action
+                        </div>
+                        <div class="log-date">
+                            @log.CreatedDate
+                        </div>
+                    </div>
+                }
+            }
+
+        </div>
     </div>
 </div>

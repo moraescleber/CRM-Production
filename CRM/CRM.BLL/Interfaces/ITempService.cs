@@ -15,6 +15,7 @@ namespace CRM.BLL.Interfaces
         IEnumerable<CompanyDTO> QualifiedCompanies { get; set; }
         IEnumerable<CompanyDTO> NotQualifiedCompanies { get; set; }
         IEnumerable<ContactDTO> Contacts { get; set; }
+        IEnumerable<CompanyModel> CompanyModels { get; set; }
         IEnumerable<CompanyContactLink> CompanyContactLinks { get; set; }
         IEnumerable<Linkedin> Linkedins { get; set; }
         IEnumerable<LogDTO> logs { get; set; }

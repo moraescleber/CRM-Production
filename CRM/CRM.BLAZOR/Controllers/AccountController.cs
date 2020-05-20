@@ -12,9 +12,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.Extensions.Configuration;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace CRM.BLAZOR.Controllers
 {
+    [ApiController]
     public class AccountController : Controller
     {
         readonly UserManager<User> _userManager;
@@ -22,15 +27,17 @@ namespace CRM.BLAZOR.Controllers
         readonly ILogService _logService;
         SignInManager<User> _signInManager;
         IUserRegistrationService _userRegistrationService;
+        IConfiguration _configuration;
         public AccountController(UserManager<User> userManager, ITempService tempService,
             SignInManager<User> signInManager, IUserRegistrationService userRegistrationService,
-            ILogService logService)
+            ILogService logService, IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tempService = tempService;
             _userRegistrationService = userRegistrationService;
             _logService = logService;
+            _configuration = configuration;
         }
         [HttpGet("/Login")]
         public IActionResult Login()
@@ -43,40 +50,35 @@ namespace CRM.BLAZOR.Controllers
             if (ModelState.IsValid)
             {
                 var result =
-             await _signInManager.PasswordSignInAsync(model.Email, model.Password, true, false);
+             await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
                 if (result.Succeeded)
                 {
-                    var claims = new List<Claim>
-                    {
-                      new Claim(ClaimTypes.Name, model.Email)
-                    };
-
-                    var claimsIdentity = new ClaimsIdentity(
-                      claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    var authProperties = new AuthenticationProperties();
-
-                    await HttpContext.SignInAsync(
-                      CookieAuthenticationDefaults.AuthenticationScheme,
-                      new ClaimsPrincipal(claimsIdentity),
-                      authProperties);
-                    User user = await _userManager.FindByEmailAsync(model.Email);
-                    LogDTO logDTO = new LogDTO
-                    {
-                        Action = "Успешно авторизовался",
-                        UserId = user.Id
-                    };
-                    await _logService.AddLog(logDTO);
+                    var claims = new[]
+        {
+            new Claim(ClaimTypes.Name, model.Email)
+        };
+                    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["KEY"]));
+                    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                    var expiry = DateTime.Now.AddMinutes(Convert.ToInt32(_configuration["LIFETIME"]));
+                    var token = new JwtSecurityToken(
+            _configuration["ISSUER"],
+            _configuration["AUDIENCE"],
+            claims,
+            expires: expiry,
+            signingCredentials: creds
+        );
+                    
                     //_tempService.CurrentUser = await _userRegistrationService.GetCurrent(model.Email);
-                    return RedirectToAction("Index", "Home");
+                    return Ok(new LoginResult { Successful = true, Token = new JwtSecurityTokenHandler().WriteToken(token) });
                 }
                 else
                 {
                     ModelState.AddModelError("", "Неправильный логин и (или) пароль");
                 }
             }
-            return RedirectToAction("Index", "Home");
+            return Ok(new LoginResult { Successful=false, Error="Авторизация не пройдена"});
         }
-
+        [HttpPost("/Logout")]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
