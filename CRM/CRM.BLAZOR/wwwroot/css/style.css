@@ -46,7 +46,7 @@ header {
     grid-area: title-new-companies;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-    grid-template-areas: "titleName titleName titleName titleName titleName titleName plus";
+    grid-template-areas: "titleName titleName titleName titleName titleName plus upload";
 }
 
 .titleName {
@@ -55,6 +55,9 @@ header {
 
 .plus {
     grid-area: plus;
+}
+.upload{
+    grid-area: upload;
 }
 
 .title-qualified {

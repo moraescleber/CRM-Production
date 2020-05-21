@@ -14,12 +14,13 @@
     <header>
     </header>
     <div>
-        @if(User.Identity.IsAuthenticated)
+        @if (User.Identity.IsAuthenticated)
         {
             <p>gdfhjbknl;,</p>
         }
         <component type="typeof(Main)" render-mode="Server" />
     </div>
     <script src="_framework/blazor.server.js"></script>
+    <script src="~/_content/BlazorInputFile/inputfile.js"></script>
 </body>
 </html>

@@ -22,6 +22,8 @@ using Blazored.LocalStorage;
 using CRM.BLAZOR.Services;
 using CRM.DAL.Entities;
 using System.ComponentModel.DataAnnotations;
+using BlazorInputFile;
+using System.IO;
 
 namespace CRM.BLAZOR.Components
 {
@@ -52,7 +54,7 @@ namespace CRM.BLAZOR.Components
         protected AuthenticationState authState;
         protected ClaimsPrincipal user;
         protected int SelectedId;
-        
+
         protected string login;
         protected string password;
         protected string LeftStyle { get; set; } = @"'title-new-companies' 'content' 'content' 'content' 'content' 'content' 'content' 'content' 'content' 'content'
@@ -62,6 +64,7 @@ namespace CRM.BLAZOR.Components
         protected string QualifiedDisplay { get; set; } = "none";
         protected string NotQualifiedDisplay { get; set; } = "none";
         protected string ExceptionLabelDisplay { get; set; } = "none";
+        protected string UploadStatus { get; set; }
         protected IEnumerable<CompanyDTO> NewCompanies;
         protected IEnumerable<CompanyDTO> QualifiedCompanies;
         protected IEnumerable<CompanyDTO> NotQualifiedCompanies;
@@ -73,6 +76,7 @@ namespace CRM.BLAZOR.Components
         public bool IsDisabled { get; set; }
         public string SendLemmlistModalDisplay = "none";
         public string AddContactModalDisplay = "none";
+        public string ImportContactsModalDisplay = "none";
         public string ActionMessage = "Добавил новую компанию";
         public string ExceptionLabel = "";
         protected IEnumerable<ContactDTO> contacts;
@@ -108,13 +112,13 @@ namespace CRM.BLAZOR.Components
         #endregion
         #region OTHER_METHODS
         /// companies div BEGIN
-        
+
         /// logs div BEGIN
         public IEnumerable<LogDTO> logs;
         public GetUserDTO currentUser;
         /// logs div END
         /// prospect-finder div BEGIN
-        
+
         public CompanyRegistrationDTO NewCompany;
 
         /// prospect-finder div END
@@ -266,7 +270,7 @@ namespace CRM.BLAZOR.Components
                 };
                 await LogService.AddLog(logDTO);
             }
-            else if(ActionMesage != null)
+            else if (ActionMesage != null)
             {
                 LogDTO logDTO = new LogDTO
                 {
@@ -325,7 +329,7 @@ namespace CRM.BLAZOR.Components
         /// controls div END
         public async Task AddCompany()
         {
-            if(NewCompany!=null)
+            if (NewCompany != null)
             {
                 try
                 {
@@ -335,7 +339,7 @@ namespace CRM.BLAZOR.Components
                     await TempService.UpdateCompanies();
                     await Close();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     ExceptionLabel = ex.Message;
                     ExceptionLabelDisplay = "block";
@@ -367,12 +371,36 @@ namespace CRM.BLAZOR.Components
             AddContactModalDisplay = "block";
             await InvokeAsync(StateHasChanged);
         }
+        public async Task OpenModalForImportFile()
+        {
+            ImportContactsModalDisplay = "block";
+            await InvokeAsync(StateHasChanged);
+        }
         public async Task Close()
         {
             AddContactModalDisplay = "none";
             SendLemmlistModalDisplay = "none";
+            ImportContactsModalDisplay = "none";
             ExceptionLabelDisplay = "none";
             await InvokeAsync(StateHasChanged);
+        }
+        public async Task HandleSelection(IFileListEntry[] files)
+        {
+            string EndDirectory = "wwwroot/files/";
+            var file = files.FirstOrDefault();
+            if (file != null)
+            {
+                // Just load into .NET memory to show it can be done
+                // Alternatively it could be saved to disk, or parsed in memory, or similar
+                /*var ms = new MemoryStream();
+                await file.Data.CopyToAsync(ms);*/
+                using (FileStream DestinationStream = File.Create(EndDirectory + "file.csv"))
+                {
+                    await file.Data.CopyToAsync(DestinationStream);
+                }
+
+                UploadStatus = $"Finished loading {file.Size} bytes from {file.Name}";
+            }
         }
         /// prospect-finder div END
         #endregion
