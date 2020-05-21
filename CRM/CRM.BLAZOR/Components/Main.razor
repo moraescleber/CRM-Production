@@ -8,7 +8,7 @@
     <div class="left" style="grid-template-areas:@LeftStyle">
         @if (user!=null&&user.Identity.IsAuthenticated&&TempService.CurrentUser != null)
         {
-            <div class="title title-new-companies" @onclick="openNewCompaniesDiv">
+            <div class="title title-new-companies" @onclick="OpenNewCompaniesDiv">
                 <span class="titleName">
                     Новые компании
                 </span>
@@ -21,19 +21,19 @@
                 {
                     if (company.Id != SelectedId)
                     {
-                        <div class="company-element" @onclick="@(async _ => await selectCompanyElement(company.Id))">
+                        <div class="company-element" @onclick="@(async _ => await SelectCompanyElement(company.Id))">
                             <a @onclick:stopPropagation="true" @onclick="async _=> await AddLog(WebSite:company.Website)" href="http://@company.Website" target="_blank">@company.CompanyLegalName</a> <br />
                         </div>
                     }
                     else
                     {
-                        <div style="background:red" class="company-element" @onclick="@(async _ => await selectCompanyElement(company.Id))">
+                        <div style="background:red" class="company-element" @onclick="@(async _ => await SelectCompanyElement(company.Id))">
                             <a @onclick:stopPropagation="true" @onclick="async _=>await AddLog(WebSite:company.Website)" href="http://@company.Website" target="_blank">@company.CompanyLegalName</a> <br />
                         </div>
                     }
                 }
             </div>
-            <div class="title title-qualified" @onclick="openQualifiedDiv">
+            <div class="title title-qualified" @onclick="OpenQualifiedDiv">
                 Квалифицированные
             </div>
             <div class="content content-qualified" style="display:@QualifiedDisplay">
@@ -41,19 +41,19 @@
                 {
                     if (company.Id != SelectedId)
                     {
-                        <div class="company-element" @onclick="@(async _ => await selectCompanyElement(company.Id))">
+                        <div class="company-element" @onclick="@(async _ => await SelectCompanyElement(company.Id))">
                             <a @onclick:stopPropagation="true" @onclick="async _=>await AddLog(WebSite:company.Website)" href="http://@company.Website" target="_blank">@company.CompanyLegalName</a> <br />
                         </div>
                     }
                     else
                     {
-                        <div style="background:red" class="company-element" @onclick="@(async _ => await selectCompanyElement(company.Id))">
+                        <div style="background:red" class="company-element" @onclick="@(async _ => await SelectCompanyElement(company.Id))">
                             <a @onclick:stopPropagation="true" @onclick="async _=>await AddLog(WebSite:company.Website)" href="http://@company.Website" target="_blank">@company.CompanyLegalName</a> <br />
                         </div>
                     }
                 }
             </div>
-            <div class="title title-not-qualified" @onclick="openNotQualifiedDiv">
+            <div class="title title-not-qualified" @onclick="OpenNotQualifiedDiv">
                 Не квалифицированные
             </div>
             <div class="content content-not-qualified" style="display:@NotQualifiedDisplay">
@@ -61,13 +61,13 @@
                 {
                     if (company.Id != SelectedId)
                     {
-                        <div class="company-element" @onclick="@(async _ => await selectCompanyElement(company.Id))">
+                        <div class="company-element" @onclick="@(async _ => await SelectCompanyElement(company.Id))">
                             <a @onclick:stopPropagation="true" @onclick="async _ => await AddLog(WebSite:company.Website)" href="http://@company.Website" target="_blank">@company.CompanyLegalName</a> <br />
                         </div>
                     }
                     else
                     {
-                        <div style="background:red" class="company-element" @onclick="@(async _ => await selectCompanyElement(company.Id))">
+                        <div style="background:red" class="company-element" @onclick="@(async _ => await SelectCompanyElement(company.Id))">
                             <a @onclick:stopPropagation="true" @onclick="async _ => await AddLog(WebSite:company.Website)" href="http://@company.Website" target="_blank">@company.CompanyLegalName</a> <br />
                         </div>
                     }
@@ -159,10 +159,10 @@
         </div>
         <div class="controls">
             <div class="flex-center not-q-div">
-                <button id="i1" @onclick="setNotQualify" disabled="@IsDisabled">Квалификацию не прошёл</button>
+                <button id="i1" @onclick="SetNotQualify" disabled="@IsDisabled">Квалификацию не прошёл</button>
             </div>
             <div class="flex-center q-div">
-                <button @onclick="setQualify" disabled="@IsDisabled">Квалифицировать как клиента</button>
+                <button @onclick="SetQualify" disabled="@IsDisabled">Квалифицировать как клиента</button>
             </div>
         </div>
         <div class="prospect-finder">

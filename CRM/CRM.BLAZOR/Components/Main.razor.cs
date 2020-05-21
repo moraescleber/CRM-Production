@@ -40,7 +40,7 @@ namespace CRM.BLAZOR.Components
         [Inject]
         NavigationManager NavigationManager { get; set; }
         [Inject]
-        CRM.BLL.Interfaces.ICompanyService companyService { get; set; }
+        CRM.BLL.Interfaces.ICompanyService CompanyService { get; set; }
         [Inject]
         protected CRM.BLL.Interfaces.IMailFindService MailFindService { get; set; }
         #endregion
@@ -178,7 +178,7 @@ namespace CRM.BLAZOR.Components
             await AuthService.Logout();
             NavigationManager.NavigateTo("/");
         }
-        public async Task selectCompanyElement(int id)
+        public async Task SelectCompanyElement(int id)
         {
             TempService.SetId(id);
             SelectedId = id;
@@ -267,35 +267,35 @@ namespace CRM.BLAZOR.Components
         }
         /// companies div END
         /// controls div BEGIN
-        public async void setQualify()
+        public async void SetQualify()
         {
             if(SelectedId!=0)
             {
-                await companyService.SetQualified(SelectedId);
-                var company = await companyService.GetCompany(SelectedId);
+                await CompanyService.SetQualified(SelectedId);
+                var company = await CompanyService.GetCompany(SelectedId);
                 QualifyCompanyModel qualified = new QualifyCompanyModel { IsQualify = true, CompanyTradingName = company.TradingName };
                 await AddLog(qualifyCompany:qualified);
             }
             
             await TempService.UpdateCompanies();
             TempService.SetId(0);
-            pause();
+            Pause();
 
         }
-        public async void setNotQualify()
+        public async void SetNotQualify()
         {
             if (SelectedId != 0)
             {
-                await companyService.SetNotQualified(SelectedId);
-                var company = await companyService.GetCompany(SelectedId);
+                await CompanyService.SetNotQualified(SelectedId);
+                var company = await CompanyService.GetCompany(SelectedId);
                 QualifyCompanyModel notQualified = new QualifyCompanyModel { IsQualify = false, CompanyTradingName = company.TradingName };
                 await AddLog(qualifyCompany:notQualified);
             }
             await TempService.UpdateCompanies();
             TempService.SetId(0);
-            pause();
+            Pause();
         }
-        async void pause()
+        async void Pause()
         {
             IsDisabled = true;
             await InvokeAsync(StateHasChanged);
@@ -331,7 +331,7 @@ namespace CRM.BLAZOR.Components
         /// prospect-finder div END
         #endregion
         #region DISPLAY
-        public void openNewCompaniesDiv()
+        public void OpenNewCompaniesDiv()
         {
             NewCompanyDisplay = "block";
             QualifiedDisplay = "none";
@@ -340,7 +340,7 @@ namespace CRM.BLAZOR.Components
 'title-qualified'
 'title-not-qualified'";
         }
-        public void openQualifiedDiv()
+        public void OpenQualifiedDiv()
         {
             NewCompanyDisplay = "none";
             QualifiedDisplay = "block";
@@ -349,7 +349,7 @@ namespace CRM.BLAZOR.Components
 'title-qualified''content' 'content' 'content' 'content' 'content' 'content' 'content' 'content' 'content'
 'title-not-qualified'";
         }
-        public void openNotQualifiedDiv()
+        public void OpenNotQualifiedDiv()
         {
             NewCompanyDisplay = "none";
             QualifiedDisplay = "none";
