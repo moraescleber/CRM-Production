@@ -39,6 +39,7 @@ namespace CRM.BLL.Services
         public IEnumerable<CompanyDTO> QualifiedCompanies { get; set; }
         public IEnumerable<CompanyDTO> NotQualifiedCompanies { get; set; }
         public IEnumerable<CompanyModel> CompanyModels { get; set; }
+        public IEnumerable<CountryDTO> Countries { get; set; }
         private int SelectedId { get; set; }
         public async Task<IEnumerable<ContactDTO>> GetCompanyContacts(int CompanyId)
         {
@@ -70,6 +71,7 @@ namespace CRM.BLL.Services
             NotQualifiedCompanies = await companyServ.GetNotQualifiedCompanies();
             Linkedins = await db.Linkedins.ToListAsync();
             CompanyContactLinks = await mailFindServ.GetCompanyContactLinks();
+            Countries = await countryServ.GetCountries();
             List<CompanyModel> companies = new List<CompanyModel>();
             await Task.Run(async () =>
             {

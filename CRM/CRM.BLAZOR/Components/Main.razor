@@ -6,13 +6,64 @@
 
 <div class="container">
     <div class="left" style="grid-template-areas:@LeftStyle">
-        @if (user!=null&&user.Identity.IsAuthenticated&&TempService.CurrentUser != null)
+        @if (user != null && user.Identity.IsAuthenticated && TempService.CurrentUser != null)
         {
+            <!-- The Modal -->
+            <div class="modal" style="display:@AddContactModalDisplay">
+
+                <!-- Modal content -->
+                <div class="modal-content">
+                    <span class="close" @onclick="Close">&times;</span>
+                    <label class="red" style="display:@ExceptionLabelDisplay">@ExceptionLabel</label>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <label>Company legal name</label>
+                                </td>
+                                <td>
+                                    <input type="text" @bind="NewCompany.CompanyLegalName">
+                                </td>
+                                <td>
+                                    <label>Trading name</label>
+                                </td>
+                                <td>
+                                    <input type="text" @bind="NewCompany.TradingName">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Website</label>
+                                </td>
+                                <td>
+                                    <input type="text" @bind="NewCompany.Website">
+                                </td>
+                                <td>
+                                    <label>Company Linkedin</label>
+                                </td>
+                                <td>
+                                    <input type="text" @bind="NewCompany.CompanyLinkedinLink">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <label>Select country</label>
+                    <select @bind="NewCompany.HGBasedInCountryId" required>
+                        <option value="0" selected disabled >Выберите страну</option>
+                        @foreach (var country in countries)
+                        {
+                            <option value="@country.Id">@country.Name</option>
+                        }
+                    </select><br>
+                    <button @onclick="async _=>await AddCompany()">OK</button><button @onclick="Close">Cancel</button>
+                </div>
+
+            </div>
             <div class="title title-new-companies" @onclick="OpenNewCompaniesDiv">
                 <span class="titleName">
                     Новые компании
                 </span>
-                <div @onclick="ImportCSV" class="plus flex-center">
+                <div @onclick="OpenModalForNewCompany" class="plus flex-center">
                     +
                 </div>
             </div>
@@ -167,7 +218,7 @@
         </div>
         <div class="prospect-finder">
             <!-- The Modal -->
-            <div id="myModal" class="modal" style="display:@ModalDisplay">
+            <div class="modal" style="display:@SendLemmlistModalDisplay">
 
                 <!-- Modal content -->
                 <div class="modal-content">
@@ -180,7 +231,7 @@
                             @contact.Email <br />
                         }
                     }
-                    <butto @onclick="async _=>await AddLog(count:SendForContacts.Count())">OK</butto><button @onclick="Close">Cancel</button>
+                    <button @onclick="async _=>await AddLog(count:SendForContacts.Count())">OK</button><button @onclick="Close">Cancel</button>
 
                 </div>
 

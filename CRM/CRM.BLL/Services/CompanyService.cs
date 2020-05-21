@@ -49,7 +49,7 @@ namespace CRM.BLL.Services
         public async Task<CompanyRegistrationDTO> CreateCompany(CompanyRegistrationDTO CompanyRegistrationDTO)
         {
             CompanyQualification NewCompany = await db.CompanyQualifications.Where(p => p.QualificationName == "NewCompany").FirstOrDefaultAsync();
-            var country = countryServ.GetCountry(CompanyRegistrationDTO.HGBasedInCountryId);
+            var country = await countryServ.GetCountry(CompanyRegistrationDTO.HGBasedInCountryId);
             if (country == null)
             {
                 throw new Exception("Id Страны не правильная");
@@ -71,6 +71,7 @@ namespace CRM.BLL.Services
             }
             else
             {
+
                 company = new Company
                 {
                     CompanyLegalName = CompanyRegistrationDTO.CompanyLegalName,
@@ -99,6 +100,7 @@ namespace CRM.BLL.Services
             Company company = await db.Companies.FindAsync(CompanyDTO.Id);
 
             company.CompanyLegalName = CompanyDTO.CompanyLegalName;
+            
             var country = countryServ.GetCountry(CompanyDTO.HGBasedInCountryId);
             if (country == null)
             {

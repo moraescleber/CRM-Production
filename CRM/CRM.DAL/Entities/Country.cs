@@ -11,5 +11,6 @@ namespace CRM.DAL.Entities
         public string Capital { get; set; }
         public int RegionId { get; set; }
         public Region Region { get; set; }
+        public virtual List<Company> Companies { get; set; }
     }
 }

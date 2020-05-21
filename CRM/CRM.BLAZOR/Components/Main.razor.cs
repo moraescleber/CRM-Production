@@ -21,6 +21,7 @@ using System.Text.Json;
 using Blazored.LocalStorage;
 using CRM.BLAZOR.Services;
 using CRM.DAL.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace CRM.BLAZOR.Components
 {
@@ -51,7 +52,7 @@ namespace CRM.BLAZOR.Components
         protected AuthenticationState authState;
         protected ClaimsPrincipal user;
         protected int SelectedId;
-
+        
         protected string login;
         protected string password;
         protected string LeftStyle { get; set; } = @"'title-new-companies' 'content' 'content' 'content' 'content' 'content' 'content' 'content' 'content' 'content'
@@ -60,6 +61,7 @@ namespace CRM.BLAZOR.Components
         protected string NewCompanyDisplay { get; set; } = "block";
         protected string QualifiedDisplay { get; set; } = "none";
         protected string NotQualifiedDisplay { get; set; } = "none";
+        protected string ExceptionLabelDisplay { get; set; } = "none";
         protected IEnumerable<CompanyDTO> NewCompanies;
         protected IEnumerable<CompanyDTO> QualifiedCompanies;
         protected IEnumerable<CompanyDTO> NotQualifiedCompanies;
@@ -69,17 +71,27 @@ namespace CRM.BLAZOR.Components
         /// company-information div END
         /// controls BEGIN
         public bool IsDisabled { get; set; }
+        public string SendLemmlistModalDisplay = "none";
+        public string AddContactModalDisplay = "none";
+        public string ActionMessage = "Добавил новую компанию";
+        public string ExceptionLabel = "";
+        protected IEnumerable<ContactDTO> contacts;
+        protected IEnumerable<CountryDTO> countries;
+        protected List<int> checkedContacts;
+        protected IEnumerable<Linkedin> Linkedins;
+        protected IEnumerable<ContactDTO> SendForContacts;
         /// controls END
         #endregion
         #region BASE_METHODS
         protected override async Task OnInitializedAsync()
         {
+            NewCompany = new CompanyRegistrationDTO();
             checkedContacts = new List<int>();
             await TempService.UpdateCompanies();
             await RenderUpdate();
             authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             user = authState.User;
-            if(user.Identity.IsAuthenticated)
+            if (user.Identity.IsAuthenticated)
             {
                 TempService.CurrentUser = await UserRegistrationService.GetCurrent(user.Identity.Name);
             }
@@ -96,22 +108,21 @@ namespace CRM.BLAZOR.Components
         #endregion
         #region OTHER_METHODS
         /// companies div BEGIN
+        
         /// logs div BEGIN
         public IEnumerable<LogDTO> logs;
         public GetUserDTO currentUser;
         /// logs div END
         /// prospect-finder div BEGIN
-        public string ModalDisplay = "none";
-        protected IEnumerable<ContactDTO> contacts;
-        protected List<int> checkedContacts;
-        protected IEnumerable<Linkedin> Linkedins;
-        protected IEnumerable<ContactDTO> SendForContacts;
+        
+        public CompanyRegistrationDTO NewCompany;
+
         /// prospect-finder div END
         async Task StartCountdown()
         {
             timer = new Timer(new TimerCallback(async _ =>
             {
-                
+
                 try
                 {
                     authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
@@ -135,7 +146,7 @@ namespace CRM.BLAZOR.Components
             NewCompanies = TempService.NewCompanies;
             QualifiedCompanies = TempService.QualifiedCompanies;
             NotQualifiedCompanies = TempService.NotQualifiedCompanies;
-
+            countries = TempService.Countries;
             SelectedId = TempService.GetSelectedId();
             if (SelectedId != 0)
             {
@@ -147,7 +158,7 @@ namespace CRM.BLAZOR.Components
             {
                 SelectedCompany = null;
             }
-            if(TempService.CurrentUser!=null)
+            if (TempService.CurrentUser != null)
             {
                 currentUser = TempService.CurrentUser;
                 var logTemp = TempService.logs;
@@ -185,8 +196,8 @@ namespace CRM.BLAZOR.Components
             SelectedCompany = TempService.CompanyModels.Where(p => p.Id == SelectedId).FirstOrDefault();
             await AddLog(id);
         }
-        public async Task AddLog(int CompanyId = 0, string WebSite = null, string LinkedinOfTradingName = null, 
-            QualifyCompanyModel qualifyCompany=null, int count = 0, string LinkedinOfUser=null)
+        public async Task AddLog(int CompanyId = 0, string WebSite = null, string LinkedinOfTradingName = null,
+            QualifyCompanyModel qualifyCompany = null, int count = 0, string LinkedinOfUser = null, string ActionMesage = null)
         {
             if (WebSite != null)
             {
@@ -207,7 +218,7 @@ namespace CRM.BLAZOR.Components
                 };
                 await LogService.AddLog(logDTO);
             }
-            else if(LinkedinOfTradingName != null)
+            else if (LinkedinOfTradingName != null)
             {
                 LogDTO logDTO = new LogDTO
                 {
@@ -216,7 +227,7 @@ namespace CRM.BLAZOR.Components
                 };
                 await LogService.AddLog(logDTO);
             }
-            else if(qualifyCompany!= null)
+            else if (qualifyCompany != null)
             {
                 LogDTO logDTO;
                 if (qualifyCompany.IsQualify)
@@ -237,7 +248,7 @@ namespace CRM.BLAZOR.Components
                 }
                 await LogService.AddLog(logDTO);
             }
-            else if(count!=0)
+            else if (count != 0)
             {
                 LogDTO logDTO = new LogDTO
                 {
@@ -245,9 +256,8 @@ namespace CRM.BLAZOR.Components
                     UserId = TempService.CurrentUser.Id
                 };
                 await LogService.AddLog(logDTO);
-                await RenderUpdate();
             }
-            else if(LinkedinOfUser!=null)
+            else if (LinkedinOfUser != null)
             {
                 LogDTO logDTO = new LogDTO
                 {
@@ -256,8 +266,17 @@ namespace CRM.BLAZOR.Components
                 };
                 await LogService.AddLog(logDTO);
             }
-
+            else if(ActionMesage != null)
+            {
+                LogDTO logDTO = new LogDTO
+                {
+                    Action = ActionMesage,
+                    UserId = TempService.CurrentUser.Id
+                };
+                await LogService.AddLog(logDTO);
+            }
             await TempService.UpdateLogs();
+            await RenderUpdate();
 
         }
         public async Task ImportCSV()
@@ -269,14 +288,14 @@ namespace CRM.BLAZOR.Components
         /// controls div BEGIN
         public async void SetQualify()
         {
-            if(SelectedId!=0)
+            if (SelectedId != 0)
             {
                 await CompanyService.SetQualified(SelectedId);
                 var company = await CompanyService.GetCompany(SelectedId);
                 QualifyCompanyModel qualified = new QualifyCompanyModel { IsQualify = true, CompanyTradingName = company.TradingName };
-                await AddLog(qualifyCompany:qualified);
+                await AddLog(qualifyCompany: qualified);
             }
-            
+
             await TempService.UpdateCompanies();
             TempService.SetId(0);
             Pause();
@@ -289,7 +308,7 @@ namespace CRM.BLAZOR.Components
                 await CompanyService.SetNotQualified(SelectedId);
                 var company = await CompanyService.GetCompany(SelectedId);
                 QualifyCompanyModel notQualified = new QualifyCompanyModel { IsQualify = false, CompanyTradingName = company.TradingName };
-                await AddLog(qualifyCompany:notQualified);
+                await AddLog(qualifyCompany: notQualified);
             }
             await TempService.UpdateCompanies();
             TempService.SetId(0);
@@ -304,6 +323,26 @@ namespace CRM.BLAZOR.Components
             await InvokeAsync(StateHasChanged);
         }
         /// controls div END
+        public async Task AddCompany()
+        {
+            if(NewCompany!=null)
+            {
+                try
+                {
+                    Validator.ValidateObject(NewCompany, new ValidationContext(NewCompany));
+                    await CompanyService.CreateCompany(NewCompany);
+                    await AddLog(ActionMesage: ActionMessage + ": " + NewCompany.TradingName);
+                    await TempService.UpdateCompanies();
+                    await Close();
+                }
+                catch(Exception ex)
+                {
+                    ExceptionLabel = ex.Message;
+                    ExceptionLabelDisplay = "block";
+                }
+                await InvokeAsync(StateHasChanged);
+            }
+        }
         /// prospect-finder div BEGIN
         public async Task Check(int value)
         {
@@ -320,12 +359,19 @@ namespace CRM.BLAZOR.Components
         public async Task Send()
         {
             SendForContacts = await MailFindService.FindContactsForId(checkedContacts.ToArray());
-            ModalDisplay = "block";
+            SendLemmlistModalDisplay = "block";
+            await InvokeAsync(StateHasChanged);
+        }
+        public async Task OpenModalForNewCompany()
+        {
+            AddContactModalDisplay = "block";
             await InvokeAsync(StateHasChanged);
         }
         public async Task Close()
         {
-            ModalDisplay = "none";
+            AddContactModalDisplay = "none";
+            SendLemmlistModalDisplay = "none";
+            ExceptionLabelDisplay = "none";
             await InvokeAsync(StateHasChanged);
         }
         /// prospect-finder div END

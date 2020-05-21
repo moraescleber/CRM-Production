@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace CRM.DAL.Entities
@@ -7,7 +8,9 @@ namespace CRM.DAL.Entities
     public class Company
     {
         public int Id { get; set; }
+        [Required]
         public string CompanyLegalName { get; set; }
+        [Required]
         public string TradingName { get; set; }
         public int HGBasedInCountryId { get; set; }
         public Country HGBasedInCountry { get; set; }

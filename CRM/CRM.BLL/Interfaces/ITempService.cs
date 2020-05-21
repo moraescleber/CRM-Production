@@ -18,6 +18,7 @@ namespace CRM.BLL.Interfaces
         IEnumerable<CompanyModel> CompanyModels { get; set; }
         IEnumerable<CompanyContactLink> CompanyContactLinks { get; set; }
         IEnumerable<Linkedin> Linkedins { get; set; }
+        IEnumerable<CountryDTO> Countries { get; set; }
         IEnumerable<LogDTO> logs { get; set; }
         Task UpdateLogs();
         void SetId(int Id);
