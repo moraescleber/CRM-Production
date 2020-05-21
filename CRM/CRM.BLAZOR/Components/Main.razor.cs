@@ -46,6 +46,8 @@ namespace CRM.BLAZOR.Components
         CRM.BLL.Interfaces.ICompanyService CompanyService { get; set; }
         [Inject]
         protected CRM.BLL.Interfaces.IMailFindService MailFindService { get; set; }
+        [Inject]
+        protected CRM.BLL.Interfaces.ICsvService CsvService { get; set; }
         #endregion
         #region VARIABLES
         /// companies div BEGIN
@@ -398,7 +400,7 @@ namespace CRM.BLAZOR.Components
                 {
                     await file.Data.CopyToAsync(DestinationStream);
                 }
-
+                await CsvService.ImportCSV();
                 UploadStatus = $"Finished loading {file.Size} bytes from {file.Name}";
             }
         }

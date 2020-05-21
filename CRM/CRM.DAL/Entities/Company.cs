@@ -8,9 +8,9 @@ namespace CRM.DAL.Entities
     public class Company
     {
         public int Id { get; set; }
-        [Required]
+        [Required(ErrorMessage ="Company Name Существует")]
         public string CompanyLegalName { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Trading Name Существует")]
         public string TradingName { get; set; }
         public int HGBasedInCountryId { get; set; }
         public Country HGBasedInCountry { get; set; }
