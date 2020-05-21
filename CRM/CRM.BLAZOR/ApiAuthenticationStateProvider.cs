@@ -24,15 +24,23 @@ namespace CRM.BLAZOR
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var savedToken = await _localStorage.GetItemAsync<string>("authToken");
+            IEnumerable<Claim> claims = Enumerable.Empty<Claim>(); 
+            try
+            {
+                claims = ParseClaimsFromJwt(savedToken);
+            }
+            catch
+            {
 
-            if (string.IsNullOrWhiteSpace(savedToken))
+            }
+            if (string.IsNullOrWhiteSpace(savedToken)||claims == Enumerable.Empty<Claim>())
             {
                 return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
             }
 
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", savedToken);
-
-            return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(ParseClaimsFromJwt(savedToken), "jwt")));
+            
+            return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(claims, "jwt")));
         }
 
         public void MarkUserAsAuthenticated(string email)

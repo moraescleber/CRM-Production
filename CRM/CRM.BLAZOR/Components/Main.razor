@@ -6,7 +6,7 @@
 
 <div class="container">
     <div class="left" style="grid-template-areas:@LeftStyle">
-        @if (TempService.CurrentUser != null)
+        @if (user!=null&&user.Identity.IsAuthenticated&&TempService.CurrentUser != null)
         {
             <div class="title title-new-companies" @onclick="openNewCompaniesDiv">
                 <span class="titleName">

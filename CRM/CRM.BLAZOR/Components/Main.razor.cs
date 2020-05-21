@@ -78,7 +78,6 @@ namespace CRM.BLAZOR.Components
             await TempService.UpdateCompanies();
             await RenderUpdate();
             authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-            //authState = await AuthenticationStateProvider.
             user = authState.User;
             if(user.Identity.IsAuthenticated)
             {
