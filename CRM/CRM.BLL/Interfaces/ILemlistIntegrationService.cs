@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CRM.BLL.Interfaces
 {
-    interface ILemlistIntegrationService
+    public interface ILemlistIntegrationService
     {
+        Task GetAdvertisingCompanies();
+        Task AddLeadInCampaign(string contact);
     }
 }

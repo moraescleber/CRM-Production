@@ -48,6 +48,8 @@ namespace CRM.BLAZOR.Components
         protected CRM.BLL.Interfaces.IMailFindService MailFindService { get; set; }
         [Inject]
         protected CRM.BLL.Interfaces.ICsvService CsvService { get; set; }
+        [Inject]
+        protected CRM.BLL.Interfaces.ILemlistIntegrationService LemlistIntegrationService { get; set; }
         #endregion
         #region VARIABLES
         /// companies div BEGIN
@@ -201,6 +203,11 @@ namespace CRM.BLAZOR.Components
             SelectedId = id;
             SelectedCompany = TempService.CompanyModels.Where(p => p.Id == SelectedId).FirstOrDefault();
             await AddLog(id);
+        }
+        public async Task SendLemlist()
+        {
+            await AddLog(count: SendForContacts.Count());
+            await LemlistIntegrationService.GetAdvertisingCompanies();
         }
         public async Task AddLog(int CompanyId = 0, string WebSite = null, string LinkedinOfTradingName = null,
             QualifyCompanyModel qualifyCompany = null, int count = 0, string LinkedinOfUser = null, string ActionMesage = null)

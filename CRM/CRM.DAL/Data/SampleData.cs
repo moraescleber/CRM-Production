@@ -257,8 +257,13 @@ namespace CRM.DAL.Data
                 };
                 await context.Companies.AddAsync(microsoft);
 
+                AdvertisingCompany advertisingCompany = new AdvertisingCompany
+                {
+                    Id = "cam_r7jfwbKo46XiS9okW",
+                    Name = "ttweb"
+                };
 
-
+                await context.AddAsync(advertisingCompany);
 
 
                 await context.SaveChangesAsync();

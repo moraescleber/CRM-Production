@@ -19,6 +19,7 @@ namespace CRM.DAL.EF
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<CompanyContactLink> CompanyContactLinks { get; set; }
         public DbSet<Linkedin> Linkedins { get; set; }
+        public DbSet<AdvertisingCompany> AdvertisingCompanies { get; set; }
 
         public ApiContext(DbContextOptions<ApiContext> options) : base(options)
         {
