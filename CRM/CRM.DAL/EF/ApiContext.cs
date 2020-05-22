@@ -30,10 +30,10 @@ namespace CRM.DAL.EF
         {
             modelBuilder.Entity<Company>()
                 .HasIndex(p => p.CompanyLegalName).IsUnique();
-            modelBuilder.Entity<Company>()
+            /*modelBuilder.Entity<Company>()
                 .HasIndex(p => p.TradingName).IsUnique();
             modelBuilder.Entity<Company>()
-                .HasIndex(p => p.Website).IsUnique();
+                .HasIndex(p => p.Website).IsUnique();*/
             base.OnModelCreating(modelBuilder);
         }
     }

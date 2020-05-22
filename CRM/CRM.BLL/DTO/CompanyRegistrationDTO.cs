@@ -10,7 +10,6 @@ namespace CRM.BLL.DTO
         public int Id { get; set; }
         [Required(ErrorMessage = "Введите Company Legal Name")]
         public string CompanyLegalName { get; set; }
-        [Required(ErrorMessage = "Введите Trading Name")]
         public string TradingName { get; set; }
         [Range(1, int.MaxValue, ErrorMessage = "Выберите страну")]
         public int HGBasedInCountryId { get; set; }

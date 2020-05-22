@@ -10,7 +10,6 @@ namespace CRM.DAL.Entities
         public int Id { get; set; }
         [Required(ErrorMessage ="Company Name Существует")]
         public string CompanyLegalName { get; set; }
-        [Required(ErrorMessage = "Trading Name Существует")]
         public string TradingName { get; set; }
         public int HGBasedInCountryId { get; set; }
         public Country HGBasedInCountry { get; set; }
