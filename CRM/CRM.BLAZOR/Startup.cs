@@ -75,6 +75,7 @@ namespace CRM.BLAZOR
             services.AddTransient(typeof(ILogService), typeof(LogService));
             services.AddTransient(typeof(ICsvService), typeof(CsvService));
             services.AddTransient(typeof(ILemlistIntegrationService), typeof(LemlistIntegrationService));
+            services.AddTransient(typeof(IHunterIntegrationService), typeof(HunterIntegrationService));
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>

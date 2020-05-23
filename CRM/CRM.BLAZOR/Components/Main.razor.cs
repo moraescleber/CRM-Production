@@ -50,6 +50,8 @@ namespace CRM.BLAZOR.Components
         protected CRM.BLL.Interfaces.ICsvService CsvService { get; set; }
         [Inject]
         protected CRM.BLL.Interfaces.ILemlistIntegrationService LemlistIntegrationService { get; set; }
+        [Inject]
+        protected CRM.BLL.Interfaces.IHunterIntegrationService HunterIntegrationService { get; set; }
         #endregion
         #region VARIABLES
         /// companies div BEGIN
@@ -57,6 +59,7 @@ namespace CRM.BLAZOR.Components
         protected CancellationTokenSource _cts = new CancellationTokenSource();
         protected AuthenticationState authState;
         protected ClaimsPrincipal user;
+        public CompanyModel SelectedCompany;
         protected int SelectedId;
 
         protected string login;
@@ -74,7 +77,6 @@ namespace CRM.BLAZOR.Components
         protected IEnumerable<CompanyDTO> NotQualifiedCompanies;
         /// companies div END
         /// company-information div BEGIN
-        public CompanyModel SelectedCompany;
         /// company-information div END
         /// controls BEGIN
         public bool IsDisabled { get; set; }
@@ -82,6 +84,8 @@ namespace CRM.BLAZOR.Components
         public string AddContactModalDisplay = "none";
         public string ImportContactsModalDisplay = "none";
         public string AddLemlistStatisticModalDisplay = "none";
+        public string MessageModalDisplay = "none";
+        public string MessageForModal = "";
         public string ActionMessage = "Добавил новую компанию";
         public string ExceptionLabel = "";
         protected IEnumerable<ContactDTO> contacts;
@@ -207,20 +211,7 @@ namespace CRM.BLAZOR.Components
             SelectedCompany = TempService.CompanyModels.Where(p => p.Id == SelectedId).FirstOrDefault();
             await AddLog(id);
         }
-        public async Task SendLemlist()
-        {
-            var results = (await LemlistIntegrationService.AddLeadsInCampaign(SendForContacts.ToList())).ToList();
-            int successResults = results.Where(p=>p.Result==true).Count();
-            int failResults = results.Where(p => p.Result == false).Count();
-            AddLemlistStatistic = new AddLemlistStatistic
-            {
-                successCount = successResults,
-                failedCount = failResults
-            };
-            await AddLog(count: successResults);
-            await Close();
-            await OpenModalForAddLemlistStatistic();
-        }
+        
         public async Task AddLog(int CompanyId = 0, string WebSite = null, string LinkedinOfTradingName = null,
             QualifyCompanyModel qualifyCompany = null, int count = 0, string LinkedinOfUser = null, string ActionMesage = null)
         {
@@ -387,6 +378,34 @@ namespace CRM.BLAZOR.Components
             SendLemmlistModalDisplay = "block";
             await InvokeAsync(StateHasChanged);
         }
+        public async Task SendLemlist()
+        {
+            var results = (await LemlistIntegrationService.AddLeadsInCampaign(SendForContacts.ToList())).ToList();
+            int successResults = results.Where(p => p.Result == true).Count();
+            int failResults = results.Where(p => p.Result == false).Count();
+            AddLemlistStatistic = new AddLemlistStatistic
+            {
+                successCount = successResults,
+                failedCount = failResults
+            };
+            await AddLog(count: successResults);
+            await Close();
+            await OpenModalForAddLemlistStatistic();
+        }
+        public async Task FindHunter()
+        {
+            
+            if (SelectedCompany!=null&&SelectedCompany.Website!=null)
+            {
+                List<Contact> FoundContacts = (await HunterIntegrationService.FindDomainContacts(SelectedCompany.Website)).ToList();
+                MessageForModal = "Найдены "+ FoundContacts.Count+" новых контактов";
+                MessageModalDisplay = "block";
+                await TempService.UpdateCompanies();
+                
+                await InvokeAsync(StateHasChanged);
+            }
+            
+        }
         public async Task OpenModalForNewCompany()
         {
             AddContactModalDisplay = "block";
@@ -402,6 +421,7 @@ namespace CRM.BLAZOR.Components
             AddLemlistStatisticModalDisplay = "block";
             await InvokeAsync(StateHasChanged);
         }
+
         public async Task Close()
         {
             AddContactModalDisplay = "none";
@@ -409,6 +429,7 @@ namespace CRM.BLAZOR.Components
             ImportContactsModalDisplay = "none";
             ExceptionLabelDisplay = "none";
             AddLemlistStatisticModalDisplay = "none";
+            MessageModalDisplay = "none";
             await InvokeAsync(StateHasChanged);
         }
         public async Task HandleSelection(IFileListEntry[] files)

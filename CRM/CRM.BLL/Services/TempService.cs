@@ -72,6 +72,7 @@ namespace CRM.BLL.Services
             Linkedins = await db.Linkedins.ToListAsync();
             CompanyContactLinks = await mailFindServ.GetCompanyContactLinks();
             Countries = await countryServ.GetCountries();
+            Contacts = await mailFindServ.GetAllContacts();
             List<CompanyModel> companies = new List<CompanyModel>();
             await Task.Run(async () =>
             {
