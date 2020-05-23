@@ -70,7 +70,7 @@ namespace CRM.DAL.Data
                 Contact contact12 = new Contact { Email = "kc29hc0e@yandex.ru" };
                 Contact TtrContact1 = new Contact
                 {
-                    Email = "a.slastinin@turkmen -tranzit.com",
+                    Email = "a.slastinin@turkmen-tranzit.com",
                     FirstName = "Aleksandr",
                     Position = "department head",
                     Surname = "Slastinin",

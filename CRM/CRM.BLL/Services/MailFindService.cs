@@ -30,11 +30,7 @@ namespace CRM.BLL.Services
             foreach (int id in ContactId)
             {
                 Contact contact = await db.Contacts.FindAsync(id);
-                ContactDTO contactDTO = new ContactDTO
-                {
-                    Id = contact.Id,
-                    Email = contact.Email
-                };
+                ContactDTO contactDTO = await Map(contact);
                 contacts.Add(contactDTO);
             }
             return contacts;
@@ -47,7 +43,9 @@ namespace CRM.BLL.Services
 
         public async Task<IEnumerable<CompanyContactLink>> GetCompanyContactLinks()
         {
-            return await db.CompanyContactLinks.Include(p => p.Contact).ThenInclude(p => p.Linkedin).ToListAsync();
+            return await db.CompanyContactLinks
+                .Include(p => p.Contact).ThenInclude(p => p.Linkedin)
+                .Include(p=>p.Company).ToListAsync();
         }
 
         public async Task<IEnumerable<ContactDTO>> GetCompanyContacts(int CompanyId)

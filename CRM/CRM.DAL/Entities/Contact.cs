@@ -10,6 +10,7 @@ namespace CRM.DAL.Entities
         public string Email { get; set; }
         public string Position { get; set; }
         public string FirstName { get; set; }
+        public string LastName { get; set; }
         public string Surname { get; set; }
         public int? LinkedinId { get; set; }
         public Linkedin Linkedin { get; set; }

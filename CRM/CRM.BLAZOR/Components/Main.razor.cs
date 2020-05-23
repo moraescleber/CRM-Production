@@ -81,6 +81,7 @@ namespace CRM.BLAZOR.Components
         public string SendLemmlistModalDisplay = "none";
         public string AddContactModalDisplay = "none";
         public string ImportContactsModalDisplay = "none";
+        public string AddLemlistStatisticModalDisplay = "none";
         public string ActionMessage = "Добавил новую компанию";
         public string ExceptionLabel = "";
         protected IEnumerable<ContactDTO> contacts;
@@ -88,12 +89,14 @@ namespace CRM.BLAZOR.Components
         protected List<int> checkedContacts;
         protected IEnumerable<Linkedin> Linkedins;
         protected IEnumerable<ContactDTO> SendForContacts;
+        public AddLemlistStatistic AddLemlistStatistic;
         /// controls END
         #endregion
         #region BASE_METHODS
         protected override async Task OnInitializedAsync()
         {
             NewCompany = new CompanyRegistrationDTO();
+            AddLemlistStatistic = new AddLemlistStatistic();
             checkedContacts = new List<int>();
             await TempService.UpdateCompanies();
             await RenderUpdate();
@@ -206,8 +209,17 @@ namespace CRM.BLAZOR.Components
         }
         public async Task SendLemlist()
         {
-            await AddLog(count: SendForContacts.Count());
-            await LemlistIntegrationService.GetAdvertisingCompanies();
+            var results = (await LemlistIntegrationService.AddLeadsInCampaign(SendForContacts.ToList())).ToList();
+            int successResults = results.Where(p=>p.Result==true).Count();
+            int failResults = results.Where(p => p.Result == false).Count();
+            AddLemlistStatistic = new AddLemlistStatistic
+            {
+                successCount = successResults,
+                failedCount = failResults
+            };
+            await AddLog(count: successResults);
+            await Close();
+            await OpenModalForAddLemlistStatistic();
         }
         public async Task AddLog(int CompanyId = 0, string WebSite = null, string LinkedinOfTradingName = null,
             QualifyCompanyModel qualifyCompany = null, int count = 0, string LinkedinOfUser = null, string ActionMesage = null)
@@ -385,12 +397,18 @@ namespace CRM.BLAZOR.Components
             ImportContactsModalDisplay = "block";
             await InvokeAsync(StateHasChanged);
         }
+        public async Task OpenModalForAddLemlistStatistic()
+        {
+            AddLemlistStatisticModalDisplay = "block";
+            await InvokeAsync(StateHasChanged);
+        }
         public async Task Close()
         {
             AddContactModalDisplay = "none";
             SendLemmlistModalDisplay = "none";
             ImportContactsModalDisplay = "none";
             ExceptionLabelDisplay = "none";
+            AddLemlistStatisticModalDisplay = "none";
             await InvokeAsync(StateHasChanged);
         }
         public async Task HandleSelection(IFileListEntry[] files)
